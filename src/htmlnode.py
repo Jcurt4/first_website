@@ -10,8 +10,8 @@ class HTMLNode():
     
     def props_to_html(self):
         if self.props is None:
-            return '' #this is just ahndling the TypeError by giving nothing back.  probably sloppy.  
-        return (' '.join([f'{key}="{value}"' for key, value in self.props.items()]))
+            return '' #this is just hanndling the TypeError by giving nothing back.  probably sloppy.  
+        return (' ' + ' '.join([f'{key}="{value}"' for key, value in self.props.items()]))
     
     def __repr__(self):
         return f'tag={self.tag}, value={self.value}, children={self.children}, props={self.props}'

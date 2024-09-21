@@ -37,8 +37,16 @@ class TestHTMLNode(unittest.TestCase):
         node = HTMLNode(
             tag=None, 
             value=None,
-            children=None
+            children=None,
+            props={
+                'test': 'https://www.testagain.com', 
+                'target': 'testing None on everything else, not just children'
+            }
         )
+
+        expected_output = ' test="https://www.testagain.com" target="testing None on everything else, not just children"'
+
+        self.assertEqual(node.props_to_html(), expected_output)
 
 if __name__ == '__main__':
     unittest.main()

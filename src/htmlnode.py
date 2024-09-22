@@ -18,8 +18,8 @@ class HTMLNode():
     
 
 class LeafNode(HTMLNode):
-    def __init__(self, value, tag=None , props=None):
-        super().__init__(value, tag, props)
+    def __init__(self, tag=None, value=None, props=None):
+        super().__init__(tag=tag, value=value, props=props)
 
     def to_html(self):
         if self.value is None:
@@ -31,3 +31,24 @@ class LeafNode(HTMLNode):
         else:
             props_str = ' '.join([f'{key}="{value}"' for key, value in self.props.items()])
             return f'<{self.tag} {props_str}>{self.value}</{self.tag}>'
+        
+
+class ParentNode(HTMLNode):
+    def __init__(self, tag=None, children=None, props=None):
+        super().__init__(tag=tag, children=children, props=props)
+
+    def to_html(self):
+        props_str = ''
+        if not self.tag:
+            raise ValueError('Must have a tag')
+        if not self.children:
+            raise ValueError('Must have children')
+        if self.props:
+            props_str = ' ' + ' '.join(f'{key}="{value}"' for key, value in self.props.items())
+        
+        opening_tag = f"<{self.tag}{props_str}>"
+        closing_tag = f"</{self.tag}>"
+
+        children_html = "".join(child.to_html() for child in self.children)
+
+        return f"{opening_tag}{children_html}{closing_tag}"

@@ -72,8 +72,25 @@ class TestTextNode(unittest.TestCase):
 
         self.assertEqual(html_node.to_html(), excpected)
 
+    def test_textnode_to_html_node_unsupported_text_type(self):
+        with self.assertRaises(ValueError) as context:
+            text_node = TextNode("This is a text node", "unsupported")
+            text_node_to_html_node(text_node)
 
+        self.assertEqual(str(context.exception), 'Unsupported text type: unsupported')
 
+    def test_textnode_to_html_node_empty_string(self):
+        text_node = TextNode("", "text")
+        html_node = text_node_to_html_node(text_node)
+        excpected = ''
+
+        self.assertEqual(html_node.to_html(), excpected)
+
+    def test_textnode_to_html_node_none_type(self):
+        text_node = TextNode("This is a text node", None)
+        html_node = text_node_to_html_node(text_node)
+        expected = 'This is a text node'
+        self.assertEqual(html_node.to_html(), expected)
 
 if __name__ == "__main__":
     unittest.main()

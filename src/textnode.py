@@ -22,6 +22,8 @@ class TextNode:
     
 def text_node_to_html_node(text_node):
     tag_map = {
+        None: ("", text_node.text),
+        "": ("", text_node.text),
         "text": ("", text_node.text),
         "bold": ("b", text_node.text),
         "italic": ("i", text_node.text),
@@ -33,5 +35,5 @@ def text_node_to_html_node(text_node):
     if text_node.text_type not in tag_map:
         raise ValueError(f"Unsupported text type: {text_node.text_type}")
 
-    tag, content, *props = tag_map[text_node.text_type]
-    return LeafNode(tag, content, props[0] if props else None)
+    tag, value, *props = tag_map[text_node.text_type]
+    return LeafNode(tag=tag, value=value, props=(props[0] if props else None))

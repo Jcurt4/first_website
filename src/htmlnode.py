@@ -24,8 +24,17 @@ class LeafNode(HTMLNode):
     def to_html(self):
         if self.value is None:
             raise ValueError('Must provide a value')
-        if self.tag is None:
+        if self.tag == 'text':
+            raise ValueError('Try using "" or None')
+        if self.tag is None or self.tag == '':
             return self.value
+        self_closing_tags = ["img", "br", "hr", "input", "meta"]
+        if self.tag in self_closing_tags:
+            if not self.props:
+                return f'<{self.tag} />'
+            else:
+                props_str = ' '.join([f'{key}="{value}"' for key, value in self.props.items()])
+                return f'<{self.tag} {props_str}>'
         if not self.props:
             return f'<{self.tag}>{self.value}</{self.tag}>'
         else:

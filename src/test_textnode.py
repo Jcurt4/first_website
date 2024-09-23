@@ -33,44 +33,44 @@ class TestTextNode(unittest.TestCase):
     def test_textnode_to_html_node_text(self):
         text_node = TextNode("This is a text node", "text")
         html_node = text_node_to_html_node(text_node)
-        excpected = 'This is a text node'
+        expected = 'This is a text node'
 
-        self.assertEqual(html_node.to_html(), excpected)
+        self.assertEqual(html_node.to_html(), expected)
 
     def test_textnode_to_html_node_bold(self):
         text_node = TextNode("This is a text node", "bold")
         html_node = text_node_to_html_node(text_node)
-        excpected = '<b>This is a text node</b>'
+        expected = '<b>This is a text node</b>'
 
-        self.assertEqual(html_node.to_html(), excpected)
+        self.assertEqual(html_node.to_html(), expected)
 
     def test_textnode_to_html_node_italic(self):
         text_node = TextNode("This is a text node", "italic")
         html_node = text_node_to_html_node(text_node)
-        excpected = '<i>This is a text node</i>'
+        expected = '<i>This is a text node</i>'
 
-        self.assertEqual(html_node.to_html(), excpected)
+        self.assertEqual(html_node.to_html(), expected)
 
     def test_textnode_to_html_node_code(self):
         text_node = TextNode("This is a text node", "code")
         html_node = text_node_to_html_node(text_node)
-        excpected = '<code>This is a text node</code>'
+        expected = '<code>This is a text node</code>'
 
-        self.assertEqual(html_node.to_html(), excpected)
+        self.assertEqual(html_node.to_html(), expected)
 
     def test_textnode_to_html_node_link(self):
         text_node = TextNode("This is a text node", "link", "http://www.google.com")
         html_node = text_node_to_html_node(text_node)
-        excpected = '<a href="http://www.google.com">This is a text node</a>'
+        expected = '<a href="http://www.google.com">This is a text node</a>'
 
-        self.assertEqual(html_node.to_html(), excpected)
+        self.assertEqual(html_node.to_html(), expected)
 
     def test_textnode_to_html_node_image(self):
         text_node = TextNode("This is a text node", "image", "http://www.google.com")
         html_node = text_node_to_html_node(text_node)
-        excpected = '<img src="http://www.google.com" alt="This is a text node">'
+        expected = '<img src="http://www.google.com" alt="This is a text node">'
 
-        self.assertEqual(html_node.to_html(), excpected)
+        self.assertEqual(html_node.to_html(), expected)
 
     def test_textnode_to_html_node_unsupported_text_type(self):
         with self.assertRaises(ValueError) as context:
@@ -82,9 +82,9 @@ class TestTextNode(unittest.TestCase):
     def test_textnode_to_html_node_empty_string(self):
         text_node = TextNode("", "text")
         html_node = text_node_to_html_node(text_node)
-        excpected = ''
+        expected = ''
 
-        self.assertEqual(html_node.to_html(), excpected)
+        self.assertEqual(html_node.to_html(), expected)
 
     def test_textnode_to_html_node_none_type(self):
         text_node = TextNode("This is a text node", None)

@@ -3,8 +3,10 @@ from textnode import TextNode
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
+    if not delimiter or delimiter.isspace():
+        return old_nodes
     for node in old_nodes:
-        if node.text_type != 'text':
+        if node.text_type != 'text' or node.text_type:
             new_nodes.append(node)
         else:
             start_index = node.text.find(delimiter)

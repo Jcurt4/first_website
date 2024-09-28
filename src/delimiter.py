@@ -1,34 +1,24 @@
 from textnode import TextNode
 
 
-def split_nodes_delimiter(old_nodes, delimiter, text_type):
+def split_nodes_delimiter(old_nodes, delimiter, text_type='text'):
     new_nodes = []
-    if not delimiter or delimiter.isspace():
-        return old_nodes
     for node in old_nodes:
-        if node.text_type != 'text' or node.text_type:
+        if node.text_type != 'text':
+            new_nodes.append(node)
+            continue
+        
+        parts = node.text.split(delimiter)
+        if len(parts) % 2 == 0:
+            raise ValueError(f"Mismatched delimiters in text: {node.text}")
+        
+        if delimiter not in node.text:
             new_nodes.append(node)
         else:
-            start_index = node.text.find(delimiter)
-            if start_index != -1:
-                end_index = node.text.find(delimiter, start_index + len(delimiter))
-                if end_index != -1:
-                    before_delimiter = node.text[0: start_index]
-                    inside_delimiter = node.text[(start_index + len(delimiter)):end_index]
-                    after_delimiter = node.text[(end_index + len(delimiter)):]
-
-                    if before_delimiter:
-                        new_nodes.append(TextNode(before_delimiter, 'text'))
-                    if inside_delimiter:
-                        new_nodes.append(TextNode(inside_delimiter, text_type))
-                    if after_delimiter:
-                        new_nodes.extend(split_nodes_delimiter([TextNode(after_delimiter, 'text')], delimiter, text_type))
-
-                else:
-                    raise Exception(f"Delimiter {delimiter} not closed in text: {node.text}")
-
-            else:
-                new_nodes.append(node)
-
+            for i, part in enumerate(parts):
+                if part:  # only create nodes for non-empty parts
+                    new_type = text_type if i % 2 else 'text'
+                    new_nodes.append(TextNode(part, new_type))
+        
     return new_nodes
             

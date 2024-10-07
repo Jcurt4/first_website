@@ -3,6 +3,10 @@ from textnode import TextNode
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type='text'):
     new_nodes = []
+    
+    if delimiter is None or delimiter == '':
+        raise ValueError('Delimiter cannot be None or an empty string.')
+    
     for node in old_nodes:
         if node.text_type != 'text':
             new_nodes.append(node)

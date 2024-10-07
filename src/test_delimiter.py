@@ -16,20 +16,29 @@ class TestDelimiter(unittest.TestCase):
         self.assertEqual(new_nodes[2].text, ' word')
 
     def test_no_delimiter(self):
-        node = TextNode('This is a text node with no delimiter and text as text type', 'text')
-        new_nodes = split_nodes_delimiter([node], '', 'text')
-        self.assertEqual(len(new_nodes), 1)
-        self.assertEqual(new_nodes[0].text, 'This is a text node with no delimiter and text as text type')
-        self.assertEqual(new_nodes[0].text_type, 'text')
-        
-    def test_no_text_type(self):
-        node = TextNode('This is a text node with **no** text type', '')
-        new_nodes = split_nodes_delimiter([node], '**', '')
-        self.assertEqual(len(new_nodes), 3)
-        self.assertEqual(new_nodes[0].text, 'This is a text node with ')
-        self.assertEqual(new_nodes[1].text, 'no')
-        self.assertEqual(new_nodes[2].text, 'text type')
-        self.assertEqual(new_nodes[1].text_type, '')
+        with self.assertRaises(ValueError):
+            node = TextNode('This is a node with no delimiter', 'text')
+            new_nodes = split_nodes_delimiter([node], delimiter=None)
+
+    def test_mismatched_delimiters(self):
+        with self.assertRaises(ValueError):
+            node = TextNode("This is a test of *mismatched' delimiters", 'text')
+            split_nodes_delimiter([node], "*")
+
+    def test_more_than_one_split(self):
+        node = TextNode('This is going to *have* more than *one* split', 'text')
+        new_nodes = split_nodes_delimiter([node], '*')
+        self.assertEqual(new_nodes[0].text, 'This is going to ')
+        self.assertEqual(new_nodes[1].text, 'have')
+        self.assertEqual(new_nodes[2].text, ' more than ')
+        self.assertEqual(new_nodes[3].text, 'one')
+        self.assertEqual(new_nodes[4].text, ' split')
+
+    def test_for_bold(self):
+        node = TextNode('This is going to be *bold* text', 'text')
+        new_nodes = split_nodes_delimiter([node], '*', 'bold')
+        self.assertEqual()
+
 
 if __name__ == "__main__":
     unittest.main()

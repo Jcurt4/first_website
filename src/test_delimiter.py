@@ -37,8 +37,13 @@ class TestDelimiter(unittest.TestCase):
     def test_for_bold(self):
         node = TextNode('This is going to be *bold* text', 'text')
         new_nodes = split_nodes_delimiter([node], '*', 'bold')
-        self.assertEqual()
+        self.assertEqual(new_nodes[0].text, 'This is going to be ')
+        self.assertEqual(new_nodes[1].text, 'bold')
+        self.assertEqual(new_nodes[1].text_type, 'bold')
+        self.assertEqual(new_nodes[2].text, ' text')
 
+    def test_for_italics(self):
+        node = 
 
 if __name__ == "__main__":
     unittest.main()

@@ -2,6 +2,9 @@ from textnode import TextNode
 
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type='text'):
+    if not old_nodes:
+        return []
+
     new_nodes = []
     
     if delimiter is None or delimiter == '':
@@ -14,15 +17,16 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type='text'):
         
         parts = node.text.split(delimiter)
         if len(parts) % 2 == 0:
-            raise ValueError(f"Mismatched delimiters in text: {node.text}")
+            raise ValueError(f"Mismatched or unpaired delimiters in text: {node.text}")
         
         if delimiter not in node.text:
             new_nodes.append(node)
         else:
             for i, part in enumerate(parts):
-                if part:  # only create nodes for non-empty parts
+                if part or (i > 0 and i < len(parts) - 1):  # Skip empty parts at start/end
                     new_type = text_type if i % 2 else 'text'
                     new_nodes.append(TextNode(part, new_type))
         
     return new_nodes
             
+

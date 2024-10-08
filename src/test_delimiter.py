@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode
-from delimiter import split_nodes_delimiter
+from delimiter import split_nodes_delimiter, extract_markdown_images
 
 
 
@@ -125,6 +125,26 @@ class TestDelimiter(unittest.TestCase):
         self.assertEqual(new_nodes[1].text, "")
         self.assertEqual(new_nodes[1].text_type, "bold")
         self.assertEqual(new_nodes[2].text, " between delimiters")
+
+
+class TestMarkdownImage(unittest.TestCase):
+    def test_basic_funtion(self):
+        print('Starting first test...')
+        text = 'This is a test with an image ![alt text](image.jpg)'
+        images = extract_markdown_images(text)
+        self.assertEqual(len(images), 1)
+        self.assertEqual(images[0][0], 'alt text')
+        self.assertEqual(images[0][1], 'image.jpg')
+
+    def test_with_multi_images(self):
+        text = 'This is a test with an image ![alt text](image.jpg) and another ![alt text](image2.jpg)'
+        images = extract_markdown_images(text)
+        self.assertEqual(len(images), 2)
+        self.assertEqual(images[0][0], 'alt text')
+        self.assertEqual(images[0][1], 'image.jpg')
+        self.assertEqual(images[1][0], 'alt text')
+        self.assertEqual(images[1][1], 'image2.jpg')
+
 
 if __name__ == "__main__":
     unittest.main()

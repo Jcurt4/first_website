@@ -33,6 +33,8 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type='text'):
 
 
 def extract_markdown_images(text):
-    image_pattern = r'!\[(.*?)\]\((.*?)\)'
+    image_pattern = r'!\[(.*?)\]\s*\(((?:[^()]|\([^()]*\))*)\)'
     matches = re.findall(image_pattern, text)
     return matches
+
+

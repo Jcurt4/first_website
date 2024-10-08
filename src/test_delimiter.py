@@ -129,7 +129,6 @@ class TestDelimiter(unittest.TestCase):
 
 class TestMarkdownImage(unittest.TestCase):
     def test_basic_funtion(self):
-        print('Starting first test...')
         text = 'This is a test with an image ![alt text](image.jpg)'
         images = extract_markdown_images(text)
         self.assertEqual(len(images), 1)
@@ -144,6 +143,69 @@ class TestMarkdownImage(unittest.TestCase):
         self.assertEqual(images[0][1], 'image.jpg')
         self.assertEqual(images[1][0], 'alt text')
         self.assertEqual(images[1][1], 'image2.jpg')
+
+    def test_no_images(self):
+        text = 'This is a test with no images'
+        images = extract_markdown_images(text)
+        self.assertEqual(len(images), 0)
+
+    def test_with_special_characters1(self):
+        text = 'This is a test with an image ![alt text with spaces](image.jpg)'
+        images = extract_markdown_images(text)
+        self.assertEqual(len(images), 1)
+        self.assertEqual(images[0][0], 'alt text with spaces')
+        self.assertEqual(images[0][1], 'image.jpg')
+        
+    def test_with_special_characters2(self):
+        text = 'This is a test with an image ![alt text with spaces](image with spaces.jpg)'
+        images = extract_markdown_images(text)
+        self.assertEqual(len(images), 1)
+        self.assertEqual(images[0][0], 'alt text with spaces')
+        self.assertEqual(images[0][1], 'image with spaces.jpg')
+
+    def test_with_special_characters3(self):
+        text = 'This is a test with special characters ![alt text with special characters !@#$%^&*](image.jpeg)'
+        images = extract_markdown_images(text)
+        self.assertEqual(len(images), 1)
+        self.assertEqual(images[0][0], 'alt text with special characters !@#$%^&*')
+        self.assertEqual(images[0][1], 'image.jpeg')
+
+    def test_with_spaces(self):
+        text = 'This is a test with spaces between ![alt text] (image.jpg)'
+        images = extract_markdown_images(text)
+        self.assertEqual(len(images), 1)
+        self.assertEqual(images[0][0], 'alt text')
+        self.assertEqual(images[0][1], 'image.jpg')
+
+    def test_with_nested_brackets(self):
+        text = 'This is a test with nested brackets ![alt text [with brackets]](image.jpg)'
+        images = extract_markdown_images(text)
+        self.assertEqual(len(images), 1)
+        self.assertEqual(images[0][0], 'alt text [with brackets]')
+        self.assertEqual(images[0][1], 'image.jpg')
+
+    def test_with_nested_parantheses(self):
+        text = 'This is a test with nested parantheses ![alt text (with parantheses)](image.jpg)'
+        images = extract_markdown_images(text)
+        self.assertEqual(len(images), 1)
+        self.assertEqual(images[0][0], 'alt text (with parantheses)')
+        self.assertEqual(images[0][1], 'image.jpg')
+
+    def test_with_nested_brackets_in_image(self):
+        text = 'This is a test with nested brackets in image ![alt text](image[with brackets].jpg)'
+        images = extract_markdown_images(text)
+        self.assertEqual(len(images), 1)
+        self.assertEqual(images[0][0], 'alt text')
+        self.assertEqual(images[0][1], 'image[with brackets].jpg')
+
+    def test_with_nested_parantheses_in_image(self):
+        text = 'This is a test with nested parantheses in image ![alt text](image(with parantheses).jpg)'
+        images = extract_markdown_images(text)
+        self.assertEqual(len(images), 1)
+        self.assertEqual(images[0][0], 'alt text')
+        self.assertEqual(images[0][1], 'image(with parantheses).jpg')
+
+
 
 
 if __name__ == "__main__":

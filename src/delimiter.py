@@ -1,4 +1,5 @@
-from textnode import TextNode
+from textnode import TextNode # Custom class
+import re # Regular expressions
 
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type='text'):
@@ -29,4 +30,11 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type='text'):
         
     return new_nodes
             
+
+
+def extract_markdown_images(text):
+    image_pattern = r'!\[(.*?)\]\s*\(((?:[^()]|\([^()]*\))*)\)'
+    matches = re.findall(image_pattern, text)
+    return matches
+
 

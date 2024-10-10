@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode
-from delimiter import split_nodes_delimiter, extract_markdown_images
+from delimiter import split_nodes_delimiter, extract_markdown_images, split_nodes_image
 
 
 
@@ -206,6 +206,61 @@ class TestMarkdownImage(unittest.TestCase):
         self.assertEqual(images[0][1], 'image(with parantheses).jpg')
 
 
+class TestSplitNodesImage(unittest.TestCase):
+    def test_basic_function(self):
+        node = TextNode('This is a test with an image ![alt text](image.jpg)', 'text')
+        new_nodes = split_nodes_image([node])
+        self.assertEqual(len(new_nodes), 2)
+        self.assertEqual(new_nodes[0].text, 'This is a test with an image ')
+        self.assertEqual(new_nodes[1].text, 'alt text')
+        self.assertEqual(new_nodes[1].text_type, 'image')
+        self.assertEqual(new_nodes[1].url, 'image.jpg')
+
+    def test_with_multi_images(self):
+        node = TextNode('This is a test with an image ![alt text](image.jpg) and another ![alt text](image2.jpg)', 'text')
+        new_nodes = split_nodes_image([node])
+        self.assertEqual(len(new_nodes), 4)
+        self.assertEqual(new_nodes[0].text, 'This is a test with an image ')
+        self.assertEqual(new_nodes[1].text, 'alt text')
+        self.assertEqual(new_nodes[1].text_type, 'image')
+        self.assertEqual(new_nodes[1].url, 'image.jpg')
+        self.assertEqual(new_nodes[2].text, ' and another ')
+        self.assertEqual(new_nodes[3].text, 'alt text')
+        self.assertEqual(new_nodes[3].text_type, 'image')
+        self.assertEqual(new_nodes[3].url, 'image2.jpg')
+
+    def test_no_images(self):
+        node = TextNode('This is a test with no images', 'text')
+        new_nodes = split_nodes_image([node])
+        self.assertEqual(len(new_nodes), 1)
+        self.assertEqual(new_nodes[0].text, 'This is a test with no images')
+
+    def test_with_special_characters1(self):
+        node = TextNode('This is a test with an image ![alt text with spaces](image.jpg)', 'text')
+        new_nodes = split_nodes_image([node])
+        self.assertEqual(len(new_nodes), 2)
+        self.assertEqual(new_nodes[0].text, 'This is a test with an image ')
+        self.assertEqual(new_nodes[1].text, 'alt text with spaces')
+        self.assertEqual(new_nodes[1].text_type, 'image')
+        self.assertEqual(new_nodes[1].url, 'image.jpg')
+
+    def test_with_special_characters2(self):
+        node = TextNode('This is a test with an image ![alt text with spaces](image with spaces.jpg)', 'text')
+        new_nodes = split_nodes_image([node])
+        self.assertEqual(len(new_nodes), 2)
+        self.assertEqual(new_nodes[0].text, 'This is a test with an image ')
+        self.assertEqual(new_nodes[1].text, 'alt text with spaces')
+        self.assertEqual(new_nodes[1].text_type, 'image')
+        self.assertEqual(new_nodes[1].url, 'image with spaces.jpg')
+
+    def test_with_special_characters3(self):
+        node = TextNode('This is a test with special characters ![alt text with special characters !@#$%^&*](image.jpeg)', 'text')
+        new_nodes = split_nodes_image([node])
+        self.assertEqual(len(new_nodes), 2)
+        self.assertEqual(new_nodes[0].text, 'This is a test with special characters ')
+        self.assertEqual(new_nodes[1].text, 'alt text with special characters !@#$%^&*')
+        self.assertEqual(new_nodes[1].text_type, 'image')
+        self.assertEqual(new_nodes[1].url, 'image.jpeg')
 
 
 if __name__ == "__main__":

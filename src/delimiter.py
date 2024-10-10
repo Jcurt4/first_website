@@ -38,3 +38,25 @@ def extract_markdown_images(text):
     return matches
 
 
+def split_nodes_image(old_nodes):
+    new_nodes = []
+    image_pattern = r'!\[(.*?)\]\s*\(((?:[^()]|\([^()]*\))*)\)'
+
+    for node in old_nodes:
+
+        if not re.search(image_pattern, node.text):
+            new_nodes.append(node)
+            continue
+
+        parts = re.split(image_pattern, node.text)
+
+        for i, part in enumerate(parts):
+            if i % 3 == 0:
+                if part.strip():
+                    new_nodes.append(TextNode(part, 'text'))
+            elif i % 3 == 1:
+                alt_text = part
+            elif i % 3 == 2:
+                new_nodes.append(TextNode(alt_text, 'image', part))
+
+    return new_nodes

@@ -64,4 +64,23 @@ def split_nodes_image(old_nodes):
 
 def split_nodes_link(old_nodes):
     new_nodes = []
-    image_pattern = r'\[(.*?)\]\s*\(((?:[^()]|\([^()]*\))*)\)'
+    link_pattern = r'\[(.*?)\]\s*\(((?:[^()]|\([^()]*\))*)\)'
+
+    for node in old_nodes:
+
+        if not re.search(link_pattern, node.text):
+            new_nodes.append(node)
+            continue
+
+        parts = re.split(link_pattern, node.text)
+
+        for i, part in enumerate(parts):
+            if i % 3 == 0:
+                if part.strip():
+                    new_nodes.append(TextNode(part, 'text'))
+            elif i % 3 == 1:
+                link_text = part
+            elif i % 3 == 2:
+                new_nodes.append(TextNode(link_text, 'link', part))
+
+    return new_nodes

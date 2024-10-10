@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode
-from delimiter import split_nodes_delimiter, extract_markdown_images, split_nodes_image
+from delimiter import split_nodes_delimiter, extract_markdown_images, split_nodes_image, split_nodes_link
 
 
 
@@ -261,6 +261,16 @@ class TestSplitNodesImage(unittest.TestCase):
         self.assertEqual(new_nodes[1].text, 'alt text with special characters !@#$%^&*')
         self.assertEqual(new_nodes[1].text_type, 'image')
         self.assertEqual(new_nodes[1].url, 'image.jpeg')
+
+class TestSplitNodesLink(unittest.TestCase):
+    def test_basic_function(self):
+        node = TextNode('This is a test with a link [alt text](https://bootdev.com)', 'text')
+        new_nodes = split_nodes_link([node])
+        self.assertEqual(len(new_nodes), 2)
+        self.assertEqual(new_nodes[0].text, 'This is a test with a link ')
+        self.assertEqual(new_nodes[1].text, 'alt text')
+        self.assertEqual(new_nodes[1].text_type, 'link')
+        self.assertEqual(new_nodes[1].url, 'https://bootdev.com')
 
 
 if __name__ == "__main__":

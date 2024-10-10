@@ -60,3 +60,8 @@ def split_nodes_image(old_nodes):
                 new_nodes.append(TextNode(alt_text, 'image', part))
 
     return new_nodes
+
+
+    def split_nodes_link(old_nodes):
+        new_nodes = []
+        image_pattern = r'\[(.*?)\]\s*\(((?:[^()]|\([^()]*\))*)\)'

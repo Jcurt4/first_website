@@ -1,4 +1,4 @@
-from textnode import TextNode # Custom class
+from textnode import * # Custom class
 import re # Regular expressions
 
 

@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode
-from delimiter import split_nodes_delimiter, extract_markdown_images, split_nodes_image, split_nodes_link
+from delimiter import *
 
 
 
@@ -272,6 +272,83 @@ class TestSplitNodesLink(unittest.TestCase):
         self.assertEqual(new_nodes[1].text_type, 'link')
         self.assertEqual(new_nodes[1].url, 'https://bootdev.com')
 
+    def test_with_multi_links(self):
+        node = TextNode('This is a test with a link [alt text](https://bootdev.com) and another [alt text](https://google.com)', 'text')
+        new_nodes = split_nodes_link([node])
+        self.assertEqual(len(new_nodes), 4)
+        self.assertEqual(new_nodes[0].text, 'This is a test with a link ')
+        self.assertEqual(new_nodes[1].text, 'alt text')
+        self.assertEqual(new_nodes[1].text_type, 'link')
+        self.assertEqual(new_nodes[1].url, 'https://bootdev.com')
+        self.assertEqual(new_nodes[2].text, ' and another ')
+        self.assertEqual(new_nodes[3].text, 'alt text')
+        self.assertEqual(new_nodes[3].text_type, 'link')
+        self.assertEqual(new_nodes[3].url, 'https://google.com')
+
+    def test_no_links(self):
+        node = TextNode('This is a test with no links', 'text')
+        new_nodes = split_nodes_link([node])
+        self.assertEqual(len(new_nodes), 1)
+        self.assertEqual(new_nodes[0].text, 'This is a test with no links')
+
+    def test_with_special_characters1(self):
+        node = TextNode('This is a test with a link [alt text with special characters !@#$%^&*](https://bootdev.com)', 'text')
+        new_nodes = split_nodes_link([node])
+        self.assertEqual(len(new_nodes), 2)
+        self.assertEqual(new_nodes[0].text, 'This is a test with a link ')
+        self.assertEqual(new_nodes[1].text, 'alt text with special characters !@#$%^&*')
+        self.assertEqual(new_nodes[1].text_type, 'link')
+        self.assertEqual(new_nodes[1].url, 'https://bootdev.com')
+
+    def test_with_special_characters2(self):
+        node = TextNode('This is a test with a link [alt text with special characters !@#$%^&*](https://bootdev.com/!@#$%^&*)', 'text')
+        new_nodes = split_nodes_link([node])
+        self.assertEqual(len(new_nodes), 2)
+        self.assertEqual(new_nodes[0].text, 'This is a test with a link ')
+        self.assertEqual(new_nodes[1].text, 'alt text with special characters !@#$%^&*')
+        self.assertEqual(new_nodes[1].text_type, 'link')
+        self.assertEqual(new_nodes[1].url, 'https://bootdev.com/!@#$%^&*')
+
+    def test_with_parentheses_in_link(self):
+        node = TextNode('This is a test with a link [alt text](https://bootdev.com/path(with)parentheses)', 'text')
+        new_nodes = split_nodes_link([node])
+        self.assertEqual(len(new_nodes), 2)
+        self.assertEqual(new_nodes[0].text, 'This is a test with a link ')
+        self.assertEqual(new_nodes[1].text, 'alt text')
+        self.assertEqual(new_nodes[1].text_type, 'link')
+        self.assertEqual(new_nodes[1].url, 'https://bootdev.com/path(with)parentheses')
+
+    def test_with_spaces_and_special_characters_and_multi_links(self):
+        node = TextNode('This is a test with a link [alt text with spaces](https://bootdev.com) and another [alt text with special characters !@#$%^&*](https://google.com/!@#$%^&*)', 'text')
+        new_nodes = split_nodes_link([node])
+        self.assertEqual(len(new_nodes), 4)
+        self.assertEqual(new_nodes[0].text, 'This is a test with a link ')
+        self.assertEqual(new_nodes[1].text, 'alt text with spaces')
+        self.assertEqual(new_nodes[1].text_type, 'link')
+        self.assertEqual(new_nodes[1].url, 'https://bootdev.com')
+        self.assertEqual(new_nodes[2].text, ' and another ')
+        self.assertEqual(new_nodes[3].text, 'alt text with special characters !@#$%^&*')
+        self.assertEqual(new_nodes[3].text_type, 'link')
+        self.assertEqual(new_nodes[3].url, 'https://google.com/!@#$%^&*')
+
+    def test_with_nested_brackets(self):
+        node = TextNode('This is a test with a link [alt text [with brackets]](https://bootdev.com)', 'text')
+        new_nodes = split_nodes_link([node])
+        self.assertEqual(len(new_nodes), 2)
+        self.assertEqual(new_nodes[0].text, 'This is a test with a link ')
+        self.assertEqual(new_nodes[1].text, 'alt text [with brackets]')
+        self.assertEqual(new_nodes[1].text_type, 'link')
+        self.assertEqual(new_nodes[1].url, 'https://bootdev.com')
+
+    def test_with_text_after_link(self):
+        node = TextNode('This is a test with a link [alt text](https://bootdev.com) and some text after the link', 'text')
+        new_nodes = split_nodes_link([node])
+        self.assertEqual(len(new_nodes), 3)
+        self.assertEqual(new_nodes[0].text, 'This is a test with a link ')
+        self.assertEqual(new_nodes[1].text, 'alt text')
+        self.assertEqual(new_nodes[1].text_type, 'link')
+        self.assertEqual(new_nodes[1].url, 'https://bootdev.com')
+        self.assertEqual(new_nodes[2].text, ' and some text after the link')
 
 if __name__ == "__main__":
     unittest.main()

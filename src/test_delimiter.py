@@ -1,5 +1,5 @@
 import unittest
-from textnode import TextNode
+from textnode import *
 from delimiter import *
 
 
